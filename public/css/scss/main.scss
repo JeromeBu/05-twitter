@@ -1,3 +1,102 @@
+$purple: #757ccd;
+
 body {
 	font-family: "Open Sans", sans-serif;
+	background-color: #e7ecf0;
+}
+
+.container {
+	width: 1024px;
+	margin: 0 auto;
+	padding: 20px 0;
+}
+
+header {
+	color: $purple;
+	padding: 20px 0;
+	font-size: 20px;
+	background-color: white;
+	.container {
+		padding: 0;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.twitter-logo {
+		padding: 15px;
+		color: #46a1ec;
+	}
+	a {
+		text-decoration: none;
+		text-align: center;
+		color: $purple;
+
+		&:hover {
+			border-bottom: 1px solid $purple;
+		}
+
+		&.btn-tweeter {
+			transition: 0.3s ease;
+			color: white;
+			border: 1px solid $purple;
+			border-radius: 25px;
+			background-color: $purple;
+			&:hover {
+				background-color: white;
+				color: $purple;
+			}
+		}
+	}
+}
+
+.message-to-tweet {
+	box-sizing: border-box;
+	width: 100%;
+	background-color: #eeeef8;
+	margin: 10px 0;
+	padding: 25px 15px;
+	display: flex;
+	.send-button {
+		display: none;
+	}
+	form {
+		padding: 20px;
+		width: 100%;
+		font-size: 24px;
+		input {
+			line-height: 36px;
+			width: 100%;
+		}
+	}
+}
+
+#tweets {
+	background-color: white;
+}
+
+.avatar {
+	height: 100px;
+	padding: 10px;
+	flex: 0 0 100px;
+}
+.avatar img {
+	max-width: 100%;
+	max-height: 100%;
+	border-radius: 50%;
+}
+.small {
+	height: 60px;
+	text-align: right;
+}
+
+.tweet {
+	display: flex;
+	border-bottom: 1px solid rgb(209, 209, 209);
+	padding: 10px 0;
+	.text {
+		padding: 10px;
+		.identity {
+			font-weight: bolder;
+		}
+	}
 }

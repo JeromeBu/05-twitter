@@ -4,19 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/main.css">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
     <title>Mon twitter</title>
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.loadtemplate/1.5.10/jquery.loadTemplate.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
+    <header>
+        <div class="container">
+            <a href="/?ad_type=offer">Accueil</a>
+            <div class="twitter-logo">
+                <i class="fab fa-twitter"></i>
+            </div>
+            <a href="" class="btn-tweeter">Tweeter</a>   
+        </div>
+    </header>
     <div class="container">
+        <div class="message-to-tweet">
+            <div class="avatar small">
+                <img src="https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295429_960_720.png" alt="">
+            </div>
+            <form action="">
+                <input type="string" name="message" id="my-message">
+                <button class='send-button'>Envoyer</button>
+            </form>
+        </div>
 
-        working ? 
+        <section id="tweets">
+            <div class="tweet">
+                <div class="avatar">
+                    <img src="https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295429_960_720.png" alt="">
+                </div>
+                <div class="text">
+                    <p class="identity" data-content="name">
+                        Jérôme Burkard 
+                    </p>
+                    <br>
+                    <p data-content="message">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo doloremque iusto alias possimus dolores veniam. Numquam iusto, maiores non omnis eum amet quos itaque, soluta molestias voluptatibus rem quidem mollitia!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            var socket = null;
+
+            $(document).ready(function() {
+                socket = io.connect('http://localhost:3000'); // init connexion to socket
+                initListeners();
+            });
+
+            
+            function initListeners() {
+                // (5) la création de l'écouteur `new_connection` ne doit se faire qu'une seule fois
+                $('.send-button').on('click', function(){
+                    event.preventDefault();
+                    var obj = {
+                        name: 'Jérôme',
+                        message: $('#my-message').val()
+                    }
+                    socket.emit('message-send', obj);
+                })
+
+                socket.on('new_tweet', function(data) {
+
+                    console.log(data.name + '=> has tweeted =>' + data.message);
+
+
+                        
+                    $("#tweets").loadTemplate("components/tweet.html",
+                        {
+                            name: data.name,
+                            message: data.message
+                    }, {prepend: true});           
+
+                });
+                $('.btn-tweeter').on('click', function(){
+                    .event.preventDefault();
+                    
+                })
+                // d'autres écouteurs peuvent être créés ici `socket.on(...);
+            }
+        </script>
     </div>
-
 </body>
 </html>
 
