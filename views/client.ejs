@@ -20,7 +20,7 @@
             <div class="twitter-logo">
                 <i class="fab fa-twitter"></i>
             </div>
-            <a href="" class="btn-tweeter">Tweeter</a>   
+            <a href="#oModal" class="tweeter">Tweeter</a>
         </div>
     </header>
     <div class="container">
@@ -29,26 +29,13 @@
                 <img src="https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295429_960_720.png" alt="">
             </div>
             <form action="">
-                <input type="string" name="message" id="my-message">
+                <input type="string" name="message" class="my-message">
                 <button class='send-button'>Envoyer</button>
             </form>
         </div>
 
         <section id="tweets">
-            <div class="tweet">
-                <div class="avatar">
-                    <img src="https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295429_960_720.png" alt="">
-                </div>
-                <div class="text">
-                    <p class="identity" data-content="name">
-                        Jérôme Burkard 
-                    </p>
-                    <br>
-                    <p data-content="message">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo doloremque iusto alias possimus dolores veniam. Numquam iusto, maiores non omnis eum amet quos itaque, soluta molestias voluptatibus rem quidem mollitia!
-                    </p>
-                </div>
-            </div>
+            
         </section>
 
         <script>
@@ -57,6 +44,7 @@
             $(document).ready(function() {
                 socket = io.connect('http://localhost:3000'); // init connexion to socket
                 initListeners();
+            
             });
 
             
@@ -66,32 +54,59 @@
                     event.preventDefault();
                     var obj = {
                         name: 'Jérôme',
-                        message: $('#my-message').val()
+                        message: $('.my-message').val(),
+                        date: new Date
                     }
                     socket.emit('message-send', obj);
                 })
 
                 socket.on('new_tweet', function(data) {
 
-                    console.log(data.name + '=> has tweeted =>' + data.message);
+                    console.log(data.name + '=> has tweeted =>' + data.message + '=> en date du :' + data.date);
 
 
                         
                     $("#tweets").loadTemplate("components/tweet.html",
                         {
                             name: data.name,
-                            message: data.message
+                            message: data.message,
+                            date: data.date
                     }, {prepend: true});           
 
                 });
+
                 $('.btn-tweeter').on('click', function(){
-                    .event.preventDefault();
-                    
-                })
+                    event.preventDefault();
+                });
+
                 // d'autres écouteurs peuvent être créés ici `socket.on(...);
+
+                $("#tweets").loadTemplate("components/tweet.html",
+                        <%- JSON.stringify(tweets)%>);
             }
         </script>
     </div>
+
+
+ 
+    <div id="oModal" class="oModal">
+        <div>
+            <header>
+                <a href="#fermer" title="Fermer la fenêtre" class="droite">X</a>
+                <h2>Ecrire un nouveau Tweet</h2>
+            </header>
+            <form action="">
+            <section>
+                <input type="string" name="message" class="my-message">
+                </section>
+            <footer class="cf">
+                <button class='send-button'>Envoyer</button>
+            </footer>
+            </form>
+        </div>
+    </div>
+
+  </div>
 </body>
 </html>
 

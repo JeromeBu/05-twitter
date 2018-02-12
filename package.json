@@ -13,8 +13,11 @@
 	"license": "ISC",
 	"dependencies": {
 		"chalk": "^2.3.1",
+		"date-fns": "^1.29.0",
 		"ejs": "^2.5.7",
 		"express": "^4.16.2",
+		"mongoose": "^5.0.4",
+		"morgan": "^1.9.0",
 		"socket.io": "^2.0.4"
 	}
 }
