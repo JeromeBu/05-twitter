@@ -1,3 +1,4 @@
+@import "dropzone.css";
 $purple: #757ccd;
 
 body {
@@ -60,14 +61,17 @@ header {
 	.send-button {
 		display: none;
 	}
-	form {
-		padding: 20px;
+}
+
+form {
+	padding: 20px;
+	width: 100%;
+	font-size: 24px;
+	box-sizing: border-box;
+	input {
+		box-sizing: border-box;
+		line-height: 36px;
 		width: 100%;
-		font-size: 24px;
-		input {
-			line-height: 36px;
-			width: 100%;
-		}
 	}
 }
 

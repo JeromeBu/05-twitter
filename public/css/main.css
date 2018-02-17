@@ -1,3 +1,4 @@
+@import url(dropzone.css);
 body {
   font-family: "Open Sans", sans-serif;
   background-color: #e7ecf0; }
@@ -45,13 +46,16 @@ header {
   display: flex; }
   .message-to-tweet .send-button {
     display: none; }
-  .message-to-tweet form {
-    padding: 20px;
-    width: 100%;
-    font-size: 24px; }
-    .message-to-tweet form input {
-      line-height: 36px;
-      width: 100%; }
+
+form {
+  padding: 20px;
+  width: 100%;
+  font-size: 24px;
+  box-sizing: border-box; }
+  form input {
+    box-sizing: border-box;
+    line-height: 36px;
+    width: 100%; }
 
 #tweets {
   background-color: white; }

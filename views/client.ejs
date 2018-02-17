@@ -12,6 +12,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.loadtemplate/1.5.10/jquery.loadTemplate.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/js/dropzone.js"></script>
 </head>
 <body>
     <header>
@@ -29,8 +30,8 @@
                 <img src="https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295429_960_720.png" alt="">
             </div>
             <form action="">
-                <input type="string" name="message" class="my-message">
-                <button class='send-button'>Envoyer</button>
+                <input type="string" name="message" id="main-input">
+                <button class='send-button' data-input="main-input">Envoyer</button>
             </form>
         </div>
 
@@ -38,53 +39,7 @@
             
         </section>
 
-        <script>
-            var socket = null;
-
-            $(document).ready(function() {
-                socket = io.connect('http://localhost:3000'); // init connexion to socket
-                initListeners();
-            
-            });
-
-            
-            function initListeners() {
-                // (5) la création de l'écouteur `new_connection` ne doit se faire qu'une seule fois
-                $('.send-button').on('click', function(){
-                    event.preventDefault();
-                    var obj = {
-                        name: 'Jérôme',
-                        message: $('.my-message').val(),
-                        date: new Date
-                    }
-                    socket.emit('message-send', obj);
-                })
-
-                socket.on('new_tweet', function(data) {
-
-                    console.log(data.name + '=> has tweeted =>' + data.message + '=> en date du :' + data.date);
-
-
-                        
-                    $("#tweets").loadTemplate("components/tweet.html",
-                        {
-                            name: data.name,
-                            message: data.message,
-                            date: data.date
-                    }, {prepend: true});           
-
-                });
-
-                $('.btn-tweeter').on('click', function(){
-                    event.preventDefault();
-                });
-
-                // d'autres écouteurs peuvent être créés ici `socket.on(...);
-
-                $("#tweets").loadTemplate("components/tweet.html",
-                        <%- JSON.stringify(tweets)%>);
-            }
-        </script>
+        
     </div>
 
 
@@ -96,17 +51,94 @@
                 <h2>Ecrire un nouveau Tweet</h2>
             </header>
             <form action="">
-            <section>
-                <input type="string" name="message" class="my-message">
+                <section>
+                    <input type="string" name="message" id="modal-input"/>
+                    <input type="string" name="id" id="img-input" hidden/>
+                    <p id="counter">280</p>
+                    <div id="theDZ" class="dropzone"></div>
+                    <script>
+                        Dropzone.autoDiscover = false;
+                        var myDropzone = new Dropzone("#theDZ", { url: "/upload",  paramName: "image", addRemoveLinks: true, maxFiles: 1});
+                        myDropzone.on('sending', function(file, xhr, formData){
+                            formData.append('id', "<%=id%>");
+                        });
+                        // Callback après chargement des fichiers
+                        myDropzone.on("queuecomplete", function (file) {
+                            $("#img-input").val("<%=id%>");
+                            console.log($("#img-input"));
+                        });
+                    </script>
                 </section>
-            <footer class="cf">
-                <button class='send-button'>Envoyer</button>
-            </footer>
+                <footer class="cf">
+                    <button class='send-button' data-input="modal-input">Envoyer</button>
+                </footer>
             </form>
         </div>
     </div>
 
   </div>
+
+
+  <script>
+        var socket = null;
+
+        $(document).ready(function() {
+            socket = io.connect('http://localhost:3000'); // init connexion to socket
+            initListeners();
+        });
+
+        
+        function initListeners() {
+            // (5) la création de l'écouteur `new_connection` ne doit se faire qu'une seule fois
+            $('.send-button').on('click', function(event){
+                event.preventDefault();
+                var dataInput = "#" + $(this).attr('data-input')
+                var imgId = $("#img-input").val() || null;
+                if (imgId) { imgId = `http://res.cloudinary.com/dpmc03d5t/image/upload/c_scale,w_350/v1518532579/twitter/${imgId}`}
+                console.log('Img Id :', imgId)
+                console.log(dataInput);
+                console.log($(this));
+                var obj = {
+                    name: 'Jérôme',
+                    message: $(dataInput).val(),
+                    date: new Date,
+                    img_id: imgId
+                }
+                console.log("Object sent in socket :", obj)
+                socket.emit('message-send', obj);
+            })
+
+            socket.on('new_tweet', function(data) {
+
+                console.log(data.name + '=> has tweeted =>' + data.message + '=> en date du :' + data.date);
+                    
+                $("#tweets").loadTemplate("components/tweet.html",
+                    {
+                        name: data.name,
+                        message: data.message,
+                        date: data.date,
+                        img_id: data.img_id
+                    },
+                    {prepend: true}
+                );           
+
+            });
+
+            $('.btn-tweeter').on('click', function(){
+                event.preventDefault();
+            });
+
+            // d'autres écouteurs peuvent être créés ici `socket.on(...);
+
+            $("#tweets").loadTemplate("components/tweet.html",
+                    <%- JSON.stringify(tweets)%>);
+
+            $("#modal-input").keyup(function() {
+                var count = $(this).val().length;
+                $("#counter").text(280-count);
+            });
+        }
+    </script>
 </body>
 </html>
 
